@@ -3,7 +3,7 @@
     Version: 0.8
     
     Marcus Kjeldsen 2014
-    Basic script to random or stagger time offset for selected keyframes. Stagger only works from top to bottom
+    Basic script to random or stagger time offset for selected keyframes. Stagger only works from top to bottom right now
     Does not keep easing and keyframe type.
     
     Borrowed some lines from asu_NudgeKeyFrames.jsx by Anders Sundstedt (sundstedt.se)
@@ -19,7 +19,6 @@
 
 
 function randRange(min, max) {return (Math.random() * (max - min + 1)) + min;}
-
 
 
 function shiftKeysRandom(randomness) { // shifts selected keyframes by random amount
