@@ -1,6 +1,6 @@
 ﻿/*
     Name: mkj_randomStagger
-    Version: 0.8
+    Version: 0.9
     
     Marcus Kjeldsen 2014
     Basic script to random or stagger time offset for selected keyframes. Stagger only works from top to bottom right now
@@ -9,7 +9,6 @@
     Borrowed some lines from asu_NudgeKeyFrames.jsx by Anders Sundstedt (sundstedt.se)
     Special thanks to David Torno for UI help.
     
-    TODO :: Keep keyframes selected
     TODO :: Option to stagger opposite direction
     TODO :: Option to stagger uniformly from cti
 */
@@ -55,6 +54,7 @@ function shiftKeysRandom(randomness) { // shifts selected keyframes by random am
                     }
                 }
                 
+                var reselectKeys = [];
                 
                 for (i=0; i < propSelection.length; i++){
                     
@@ -97,6 +97,17 @@ function shiftKeysRandom(randomness) { // shifts selected keyframes by random am
                         var newKey = propSelection[i].prop.addKey(obj.newTime);
                         propSelection[i].prop.setValueAtTime(obj.newTime, obj.val);
                     }
+                
+                    reselectKeys.push(newKeys);
+                }
+            
+                // reselect keys
+                for (i=0; i < reselectKeys.length; i++){
+                    for (j=0; j < reselectKeys[i].length; j++){
+                        var keyframe = reselectKeys[i][j];
+                        var key = keyframe.prop.nearestKeyIndex(keyframe.newTime);
+                        keyframe.prop.setSelectedAtKey(key, true);
+                    }
                 }
 
             } else {
@@ -116,7 +127,7 @@ function shiftKeysRandom(randomness) { // shifts selected keyframes by random am
 
 
 
-function staggerKeys(offset) { // shifts selected keyframes by random amount
+function staggerKeys(offset) { // shifts selected keyframes by offset amount
 
     var proj = app.project;
     var undoStr = "Stagger Keyframe Time Offset";
@@ -150,6 +161,7 @@ function staggerKeys(offset) { // shifts selected keyframes by random amount
                     }
                 }
                 
+                var reselectKeys = [];
                 
                 for (i=0; i < propSelection.length; i++){
                     
@@ -169,7 +181,7 @@ function staggerKeys(offset) { // shifts selected keyframes by random amount
                         var newTime = kTime + (val / fps);
                         
                         var keyObj = {
-                            prop:propSelection[i].prop, // don't really need this i guess
+                            prop:propSelection[i].prop,
                             oldTime:kTime,
                             newTime:newTime,
                             val:kVal
@@ -177,6 +189,7 @@ function staggerKeys(offset) { // shifts selected keyframes by random amount
                         
                          newKeys.push(keyObj);
                     }
+                
                 
                     // removeKeys
                     for (j=0; j < newKeys.length; j++){
@@ -189,8 +202,19 @@ function staggerKeys(offset) { // shifts selected keyframes by random amount
                     for (j=0; j < newKeys.length; j++){
                         var obj = newKeys[j];
                         var k = propSelection[i].prop.nearestKeyIndex(obj.newTime);
-                        propSelection[i].prop.addKey(obj.newTime);
+                        //propSelection[i].prop.addKey(obj.newTime);
                         propSelection[i].prop.setValueAtTime(obj.newTime, obj.val);
+                    }
+                    
+                    reselectKeys.push(newKeys);
+                }
+                
+                // reselect keys
+                for (i=0; i < reselectKeys.length; i++){
+                    for (j=0; j < reselectKeys[i].length; j++){
+                        var keyframe = reselectKeys[i][j];
+                        var key = keyframe.prop.nearestKeyIndex(keyframe.newTime);
+                        keyframe.prop.setSelectedAtKey(key, true);
                     }
                 }
 
@@ -207,7 +231,7 @@ function staggerKeys(offset) { // shifts selected keyframes by random amount
     } else {
         alert("Please open a project first to use this script.");
     }
-} // end shiftKeysRandom()
+} // end staggerKeys()
 
 
 
@@ -222,6 +246,7 @@ function panelUI(obj) {
         // the gui:
         res = "group{orientation:'column',\
                     pGroup: Group{orientation:'column',\
+                        amountText: StaticText{text:'Amount', alignment:['fill','top'], justify:'left'},\
                         amount: EditText{text:'1', alignment:['fill','top'], justify:'center'},\
                         randomBtn: Button{text:'Random'},\
                         staggerBtn: Button{text:'Stagger'},\
