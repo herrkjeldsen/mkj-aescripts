@@ -4,13 +4,14 @@
     
     Marcus Kjeldsen 2014
     Basic script to random or stagger time offset for selected keyframes. Stagger only works from top to bottom right now
-    Does not keep easing and keyframe type.
+    Does not keep easing or keyframe type!
     
-    Borrowed some lines from asu_NudgeKeyFrames.jsx by Anders Sundstedt (sundstedt.se)
+    Inspired by asu_NudgeKeyFrames.jsx by Anders Sundstedt (sundstedt.se)
     Special thanks to David Torno for UI help.
     
     TODO :: Option to stagger opposite direction
     TODO :: Option to stagger uniformly from cti
+    TODO :: Modularize the duplicate code
 */
 
 // *****************  FUNCTIONS ***************** //
@@ -241,7 +242,7 @@ function staggerKeys(offset) { // shifts selected keyframes by offset amount
 
 function panelUI(obj) {
     function createPanelUI(obj) {
-        var myPanel = (obj instanceof Panel) ? obj : new Window("palette", "MKJ KEYFRAMEOFFSET", undefined, {resizeable:true});
+        var myPanel = (obj instanceof Panel) ? obj : new Window("palette", "MKJ-KEYFRAMEOFFSET", undefined, {resizeable:true});
         
         // the gui:
         res = "group{orientation:'column',\
@@ -260,7 +261,6 @@ function panelUI(obj) {
         myPanel.layout.resize();
         myPanel.onResizing = myPanel.onResize = function(){this.layout.resize()};
         
-        var amount = parseInt(myPanel.grp.pGroup.amount.text);
         myPanel.grp.pGroup.randomBtn.onClick = function() {shiftKeysRandom(myPanel.grp.pGroup.amount.text);};
         myPanel.grp.pGroup.staggerBtn.onClick = function() {staggerKeys(myPanel.grp.pGroup.amount.text);};
         
